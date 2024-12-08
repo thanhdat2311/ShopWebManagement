@@ -192,5 +192,6 @@ public class ProductController {
             productService.createProduct(productDTO);
         }
         return ResponseEntity.ok("ok");
+        // okie
     }
 }
