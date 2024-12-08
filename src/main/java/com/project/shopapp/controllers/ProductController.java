@@ -65,7 +65,7 @@ public class ProductController {
     public ResponseEntity<?> getProductById(@PathVariable("id") Long productId) {
         try {
             Product product = productService.getProduct(productId);
-            return ResponseEntity.ok(ProductResponse.fromProduct(product));
+            return ResponseEntity.ok(product);//ProductResponse.fromProduct(product));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

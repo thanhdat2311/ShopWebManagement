@@ -49,6 +49,8 @@ public class ProductService implements IProductService{
     @Override
     public Product getProduct(long id) {
         Product product =productRepo.findById(id).orElseThrow(()-> new IllegalArgumentException("Not found product"));
+        List<ProductImage> productImages=  productImageRepo.findAllByProductId(id);
+        product.setProductImages(productImages);
         return product;
     }
 

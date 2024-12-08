@@ -1,5 +1,7 @@
 package com.project.shopapp.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +18,7 @@ public class ProductImage {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @JsonIgnoreProperties("productImages")
     private Product product;
     @Column(name = "url_image", length = 300)
     private String url_image;
