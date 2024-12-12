@@ -8,7 +8,10 @@ import com.project.shopapp.response.ProductResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
+
 public interface IProductService {
+    List<Product> findProductsByListId(List<Long> listId);
     Product createProduct(ProductDTO productDTO) ;
     Product getProduct(long id);
     Page<ProductResponse> getAllProducts(String keyword,long categoryId,PageRequest pageRequest);

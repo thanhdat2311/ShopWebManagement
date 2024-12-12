@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface ProductRepo extends JpaRepository<Product,Long> {
     boolean existsByName (String name);
     Page<Product> findAll(Pageable pageable);
@@ -18,4 +20,7 @@ public interface ProductRepo extends JpaRepository<Product,Long> {
                                  @Param("keyword") String keyword,
                                  Pageable pageable
     );
+    @Query(value = "Select * from products p where p.id in :productIds" ,
+            nativeQuery = true)
+    List<Product> findProductsByIds(@Param("productIds") List<Long> productsId);
 }

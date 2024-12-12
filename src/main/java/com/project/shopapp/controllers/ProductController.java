@@ -29,8 +29,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("api/v1/products")
 @AllArgsConstructor
@@ -38,7 +41,6 @@ public class ProductController {
     ProductService productService;
     CategoryService categoryService;
     private final LocalizationUtils localizationUtils;
-
     @GetMapping("")
     public ResponseEntity<ProductListResponse> getProduct(
             @RequestParam("page") int page,
@@ -172,7 +174,18 @@ public class ProductController {
         String contentType = file.getContentType();
         return contentType != null && contentType.startsWith("image/");
     }
-
+    @GetMapping("/Ids")
+    public ResponseEntity<?> getProductsByListIds(@RequestParam("listIdClient") String listIdClient){
+        try {
+            List<Long> listId = Arrays.stream(listIdClient.split(","))
+                    .map(Long::parseLong)
+                    .collect(Collectors.toList());
+            List<Product> productList = productService.findProductsByListId(listId);
+            return ResponseEntity.status(HttpStatus.OK).body(productList);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     @PostMapping("/generateFakerProduct")
     public ResponseEntity<String> generateFaker() {
         Faker faker = new Faker();

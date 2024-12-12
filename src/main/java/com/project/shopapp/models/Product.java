@@ -30,7 +30,7 @@ public class Product extends BaseModel{
     @ManyToOne
     @JoinColumn(name = "categories_id")
     private Category category;
-    @OneToMany
+    @OneToMany( mappedBy = "product", fetch = FetchType.EAGER)
     @JsonIgnoreProperties("product")
     private List<ProductImage> productImages = new ArrayList<>();
 }

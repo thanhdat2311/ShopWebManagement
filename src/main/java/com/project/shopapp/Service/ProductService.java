@@ -28,6 +28,11 @@ public class ProductService implements IProductService{
         return productRepo.existsByName(name);
     }
     @Override
+    public List<Product> findProductsByListId(List<Long> listId) {
+        return productRepo.findProductsByIds(listId);
+    }
+
+    @Override
     public Product createProduct(ProductDTO productDTO) {
         Category category = categoryRepo.findById(productDTO.getCategories_id())
                 .orElseThrow(()->new IllegalArgumentException("không tìm thấy category!" + productDTO.getCategories_id()));
