@@ -54,7 +54,7 @@ public class WebSecurityConfig {
                             .requestMatchers(HttpMethod.DELETE, "api/v1/orderdetail/**").hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.GET, "api/v1/orderdetail/**").hasAnyRole(Role.ADMIN, Role.USER)
                             // orders
-                            .requestMatchers(HttpMethod.POST, "api/v1/order/**").hasRole(Role.USER)
+                            .requestMatchers(HttpMethod.POST, "api/v1/order").hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.PUT, "api/v1/order/**").hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.DELETE, "api/v1/order/**").hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.GET, "api/v1/order/**").hasAnyRole(Role.ADMIN, Role.USER)

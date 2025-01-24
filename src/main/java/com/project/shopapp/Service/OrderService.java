@@ -1,28 +1,33 @@
 package com.project.shopapp.Service;
 
+import com.project.shopapp.dtos.CartItemDTO;
 import com.project.shopapp.dtos.OrderDTO;
-import com.project.shopapp.models.Order;
-import com.project.shopapp.models.OrderStatus;
-import com.project.shopapp.models.User;
+import com.project.shopapp.models.*;
 import com.project.shopapp.repositories.OrderRepo;
+import com.project.shopapp.repositories.ProductRepo;
 import com.project.shopapp.repositories.UserRepo;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class OrderService implements IOrderService {
+    private final ProductRepo productRepo;
     private final UserRepo userRepo;
     private final OrderRepo orderRepo;
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional // Nếu bất kỳ thao tác nào trong transaction thất bại, toàn bộ transaction sẽ bị hủy bỏ
     public Order createOrder(OrderDTO orderDTO) {
         User user = userRepo.findById(orderDTO.getUser_id())
                 .orElseThrow(() -> new IllegalArgumentException("Cannot found user with id " + orderDTO.getUser_id()));
@@ -34,12 +39,21 @@ public class OrderService implements IOrderService {
         order.setStatus(OrderStatus.Pending);
 
         if (orderDTO.getShipping_date() == null || orderDTO.getShipping_date().isBefore(LocalDate.now())) {
-            throw new InvalidParameterException("Shipping Date must be at least Today!");
+            throw new IllegalArgumentException("Shipping Date must be at least Today!");
         } else {
             order.setShipping_date(orderDTO.getShipping_date());
         }
-        order.setActive(true);
+        order.setActive(true); // nên default trong sql
         orderRepo.save(order);
+        List<OrderDetail> orderDetailList = new ArrayList<>();
+        for (CartItemDTO cartItemDTO : orderDTO.getCartItemDTOList()){
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrder(order);
+            // thông tin order
+            int quantity = cartItemDTO.getQuantity();
+            Product product = productRepo.findById(cartItemDTO.getProductId())
+                    .orElseThrow(()-> new EntityNotFoundException("Product not found with id: " + cartItemDTO.getQuantity()));
+        }
         return order;
     }
 

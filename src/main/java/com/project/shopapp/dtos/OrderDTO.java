@@ -1,12 +1,12 @@
 package com.project.shopapp.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.List;
 
 @Data
 @Setter
@@ -31,4 +31,6 @@ public class OrderDTO {
     private LocalDate shipping_date;
     private String shipping_address;
     private String payment_method;
+    @JsonProperty("cart_items")
+    private List<CartItemDTO> cartItemDTOList;
 }
