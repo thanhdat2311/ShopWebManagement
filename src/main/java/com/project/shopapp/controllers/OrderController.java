@@ -6,6 +6,7 @@ import com.project.shopapp.models.Order;
 import com.project.shopapp.util.LocalizationUtils;
 import jakarta.validation.Valid;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RequestMapping("api/v1/order")
 public class OrderController {
     private final OrderService orderService;

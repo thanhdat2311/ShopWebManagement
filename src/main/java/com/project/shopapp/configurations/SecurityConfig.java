@@ -2,7 +2,8 @@ package com.project.shopapp.configurations;
 
 import com.project.shopapp.models.User;
 import com.project.shopapp.repositories.UserRepo;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +14,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
+@AllArgsConstructor
 @Configuration
 public class SecurityConfig {
     // user detail object

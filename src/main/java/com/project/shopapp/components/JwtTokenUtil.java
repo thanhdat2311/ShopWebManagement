@@ -1,10 +1,10 @@
 package com.project.shopapp.components;
+import com.project.shopapp.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -15,13 +15,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 @Component
-@RequiredArgsConstructor
+//@AllArgsConstructor
 public class JwtTokenUtil {
     @Value("${jwt.expiration}")
     private long expiration; // enviroment variable
     @Value("${jwt.secretKey}")
     private String secretKey;
-    public String generateToken(com.project.shopapp.models.User user) {
+    public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("phone", user.getPhone());
         try {

@@ -2,6 +2,7 @@ package com.project.shopapp.controllers;
 
 import com.project.shopapp.Service.RolesService;
 import com.project.shopapp.models.Role;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/roles")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RolesController {
     private final RolesService rolesService;
     @GetMapping("")
