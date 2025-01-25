@@ -3,6 +3,7 @@ package com.project.shopapp.Service;
 import com.project.shopapp.dtos.CartItemDTO;
 import com.project.shopapp.dtos.OrderDTO;
 import com.project.shopapp.models.*;
+import com.project.shopapp.repositories.OrderDetailRepo;
 import com.project.shopapp.repositories.OrderRepo;
 import com.project.shopapp.repositories.ProductRepo;
 import com.project.shopapp.repositories.UserRepo;
@@ -11,16 +12,15 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 @Service
 @AllArgsConstructor
 public class OrderService implements IOrderService {
+    private final OrderDetailRepo orderDetailRepo;
     private final ProductRepo productRepo;
     private final UserRepo userRepo;
     private final OrderRepo orderRepo;
@@ -37,8 +37,8 @@ public class OrderService implements IOrderService {
         order.setUser(user);
         order.setOrders_date(new Date());
         order.setStatus(OrderStatus.Pending);
-
-        if (orderDTO.getShipping_date() == null || orderDTO.getShipping_date().isBefore(LocalDate.now())) {
+        LocalDate shippingDate = orderDTO.getShipping_date() == null ? LocalDate.now() : orderDTO.getShipping_date();
+        if ( shippingDate.isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("Shipping Date must be at least Today!");
         } else {
             order.setShipping_date(orderDTO.getShipping_date());
@@ -46,20 +46,26 @@ public class OrderService implements IOrderService {
         order.setActive(true); // nên default trong sql
         orderRepo.save(order);
         List<OrderDetail> orderDetailList = new ArrayList<>();
-        for (CartItemDTO cartItemDTO : orderDTO.getCartItemDTOList()){
+        for (CartItemDTO cartItemDTO : orderDTO.getCartItemDTOList()) {
             OrderDetail orderDetail = new OrderDetail();
+            long quantity = cartItemDTO.getQuantity();
             orderDetail.setOrder(order);
             // thông tin order
-            int quantity = cartItemDTO.getQuantity();
             Product product = productRepo.findById(cartItemDTO.getProductId())
-                    .orElseThrow(()-> new EntityNotFoundException("Product not found with id: " + cartItemDTO.getQuantity()));
+                    .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + cartItemDTO.getProductId()));
+            orderDetail.setProduct(product);
+            orderDetail.setNumber_of_product(quantity);
+            orderDetail.setPrice(product.getPrice());
+            orderDetail.setTotal_money(product.getPrice() * quantity);
+            orderDetailList.add(orderDetail);
         }
+        orderDetailRepo.saveAll(orderDetailList);
         return order;
     }
 
     @Override
     public Order getOrder(Long id) {
-        Order order = orderRepo.findById(id).orElseThrow( () -> new InvalidParameterException("Cannot Find Order With Id: "+id));
+        Order order = orderRepo.findById(id).orElseThrow(() -> new InvalidParameterException("Cannot Find Order With Id: " + id));
         return order;
     }
 
@@ -70,18 +76,18 @@ public class OrderService implements IOrderService {
 
     @Override
     public Order updateOrder(Long id, OrderDTO orderDTO) {
-        Order order = orderRepo.findById(id).orElseThrow(()->new InvalidParameterException("Cannot found!"));
-        User user = userRepo.findById(order.getUser().getId()).orElseThrow(()->new InvalidParameterException("Cannot Found User"));
-        modelMapper.typeMap(OrderDTO.class,Order.class).addMappings(mapper->mapper.skip(Order::setId));
-        modelMapper.map(orderDTO,order);
+        Order order = orderRepo.findById(id).orElseThrow(() -> new InvalidParameterException("Cannot found!"));
+        User user = userRepo.findById(order.getUser().getId()).orElseThrow(() -> new InvalidParameterException("Cannot Found User"));
+        modelMapper.typeMap(OrderDTO.class, Order.class).addMappings(mapper -> mapper.skip(Order::setId));
+        modelMapper.map(orderDTO, order);
         orderRepo.save(order);
         return order;
     }
 
     @Override
     public void deleteOrder(Long id) {
-    Order order = orderRepo.findById(id).orElseThrow(()-> new InvalidParameterException("Cannot find Order With Id "+ id));
-    order.setActive(false);
-    orderRepo.save(order);
+        Order order = orderRepo.findById(id).orElseThrow(() -> new InvalidParameterException("Cannot find Order With Id " + id));
+        order.setActive(false);
+        orderRepo.save(order);
     }
 }

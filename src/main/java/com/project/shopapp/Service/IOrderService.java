@@ -2,6 +2,7 @@ package com.project.shopapp.Service;
 
 import com.project.shopapp.dtos.OrderDTO;
 import com.project.shopapp.models.Order;
+import com.project.shopapp.models.OrderDetail;
 
 import java.util.List;
 

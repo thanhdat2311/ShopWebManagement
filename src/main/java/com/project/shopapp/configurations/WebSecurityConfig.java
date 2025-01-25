@@ -31,8 +31,8 @@ public class WebSecurityConfig {
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> {
                     requests.requestMatchers("api/v1/users/register",
-                                    "api/v1/users/login",
-                                    "api/v1/roles"
+                                    "api/v1/users/login"
+
                             )
                             .permitAll()
                             // Roles
