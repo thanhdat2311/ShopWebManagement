@@ -51,7 +51,6 @@ public class JwtTokenUtil {
     private <T> T extractClaim(String token, Function<Claims,T> claimsResolver){
         final Claims claims = this.extractAllClaims(token);
         return claimsResolver.apply(claims);
-
     }
 
     // check expiration

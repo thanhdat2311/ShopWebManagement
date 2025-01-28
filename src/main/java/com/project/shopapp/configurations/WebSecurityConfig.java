@@ -57,7 +57,7 @@ public class WebSecurityConfig {
                             .requestMatchers(HttpMethod.POST, "api/v1/order").hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.PUT, "api/v1/order/**").hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.DELETE, "api/v1/order/**").hasRole(Role.ADMIN)
-                            .requestMatchers(HttpMethod.GET, "api/v1/order/**").hasAnyRole(Role.ADMIN, Role.USER)
+                            .requestMatchers(HttpMethod.GET, "api/v1/order/**").permitAll()
                             .anyRequest().authenticated();
                 });
         http.cors(new Customizer<CorsConfigurer<HttpSecurity>>() {
