@@ -36,7 +36,7 @@ public class WebSecurityConfig {
                             )
                             .permitAll()
                             // Roles
-                            .requestMatchers(HttpMethod.GET, "api/v1/roles/**").hasAnyRole(Role.ADMIN, Role.USER)
+                            .requestMatchers(HttpMethod.GET, "api/v1/roles/**").permitAll()
                             // categories
                             .requestMatchers(HttpMethod.GET, "api/v1/categories/**").permitAll()
                             .requestMatchers(HttpMethod.POST, "api/v1/categories/**").hasRole(Role.ADMIN)

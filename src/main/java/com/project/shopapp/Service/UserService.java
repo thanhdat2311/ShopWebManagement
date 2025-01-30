@@ -7,19 +7,15 @@ import com.project.shopapp.models.Role;
 import com.project.shopapp.models.User;
 import com.project.shopapp.repositories.RoleRepo;
 import com.project.shopapp.repositories.UserRepo;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.net.http.HttpRequest;
 import java.security.InvalidParameterException;
 import java.util.Optional;
-
 @Service
 @AllArgsConstructor
 public class UserService implements IUserService {
@@ -75,6 +71,7 @@ public class UserService implements IUserService {
         return jwtTokenUtil.generateToken(user);
     }
 
+
     @Override
     public Long deleteUser(Long id) {
         if (userRepo.existsById(id)){
@@ -82,5 +79,16 @@ public class UserService implements IUserService {
             return id;
         }
         return null;
+    }
+
+    @Override
+    public User getUserDetails(String token) throws Exception{
+        if(jwtTokenUtil.isTokenExpired(token)){
+            throw new Exception("Token is expired");
+        }
+        String phoneNumber = jwtTokenUtil.extractPhoneNumber(token);
+        User user = userRepo.findByPhone(phoneNumber).orElseThrow(
+                () ->  new EntityNotFoundException("Cannot find user"));
+        return user;
     }
 }

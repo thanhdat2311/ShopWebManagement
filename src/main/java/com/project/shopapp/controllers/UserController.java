@@ -4,6 +4,7 @@ import com.project.shopapp.Service.UserService;
 import com.project.shopapp.dtos.*;
 import com.project.shopapp.models.User;
 import com.project.shopapp.response.LoginResponse;
+import com.project.shopapp.response.UserResponse;
 import com.project.shopapp.util.LocalizationUtils;
 import com.project.shopapp.util.MessageKey;
 import jakarta.servlet.http.HttpServletRequest;
@@ -61,6 +62,16 @@ public class UserController {
                     .message(localizationUtils.getLocalizationMessages(MessageKey.LOGIN_FAILED, e.getMessage()))
                     .build());
             //.status(HttpStatus.BAD_REQUEST)
+        }
+    }
+    @GetMapping("/details")
+    public ResponseEntity<?> getUserDetails(@RequestHeader("Authorization") String token) {
+        try {
+            token = token.substring(7);
+            User user = userService.getUserDetails(token);
+            return ResponseEntity.ok(UserResponse.fromUser(user));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
