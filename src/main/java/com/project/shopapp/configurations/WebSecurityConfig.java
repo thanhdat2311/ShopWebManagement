@@ -35,6 +35,9 @@ public class WebSecurityConfig {
 
                             )
                             .permitAll()
+                            //User
+                            .requestMatchers(HttpMethod.GET, "api/v1/users/details")
+                            .hasAnyRole(Role.ADMIN, Role.USER)
                             // Roles
                             .requestMatchers(HttpMethod.GET, "api/v1/roles/**").permitAll()
                             // categories
@@ -65,7 +68,7 @@ public class WebSecurityConfig {
             public void customize(CorsConfigurer<HttpSecurity> httpSecurityCorsConfigurer) {
                 CorsConfiguration configuration = new CorsConfiguration();
                 configuration.setAllowedOrigins(List.of("*")); // URL nguồn gốc được phép
-                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")); // Phương thức được phép
+                configuration.setAllowedMethods(Arrays.asList( "DELETE", "OPTIONS", "GET", "POST", "PUT")); // Phương thức được phép
                 configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "x-auth-token")); // Header được phép
                 configuration.setExposedHeaders(List.of("x-auth-token")); // Header được hiển thị trong response
                 //configuration.setAllowCredentials(true); // Cho phép cookie

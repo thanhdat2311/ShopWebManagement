@@ -1,4 +1,5 @@
 package com.project.shopapp.response;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.shopapp.models.Role;
 import com.project.shopapp.models.User;
 import jakarta.validation.constraints.NotBlank;
@@ -29,6 +30,7 @@ public class UserResponse {
 
     private int googleAccountID;
 
+    @JsonProperty("DOB")
     private Date dateOfBirth;
 
     @NotNull(message = "Role can not be empty!")

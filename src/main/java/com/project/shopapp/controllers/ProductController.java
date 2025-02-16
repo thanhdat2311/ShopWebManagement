@@ -45,8 +45,8 @@ public class ProductController {
     public ResponseEntity<ProductListResponse> getProduct(
             @RequestParam("page") int page,
             @RequestParam("limit") int limit,
-            @RequestParam("categoryId") long categoryId,
-            @RequestParam("keyword") String keyword
+            @RequestParam(value="categoryId", required = false) Long categoryId,
+            @RequestParam(value="keyword",required = false) String keyword
 
             ) {
         PageRequest pageRequest = PageRequest.of(page, limit,

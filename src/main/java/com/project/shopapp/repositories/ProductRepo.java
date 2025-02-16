@@ -16,7 +16,7 @@ public interface ProductRepo extends JpaRepository<Product,Long> {
             "AND ( :keyword IS NULL OR p.name LIKE %:keyword% " +
             "OR p.description LIKE  %:keyword%)"  ,
             nativeQuery = true)
-    Page<Product> searchProducts(@Param("categoryId") long categoryId,
+    Page<Product> searchProducts(@Param("categoryId") Long categoryId,
                                  @Param("keyword") String keyword,
                                  Pageable pageable
     );

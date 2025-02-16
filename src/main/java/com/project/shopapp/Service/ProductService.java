@@ -60,7 +60,7 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public Page<ProductResponse> getAllProducts(String keyword, long categoryId,PageRequest pageRequest) {
+    public Page<ProductResponse> getAllProducts(String keyword, Long categoryId,PageRequest pageRequest) {
         return productRepo.searchProducts(categoryId,keyword,pageRequest).map(ProductResponse::fromProduct);
     }
 

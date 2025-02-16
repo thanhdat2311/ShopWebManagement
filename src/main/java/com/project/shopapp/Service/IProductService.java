@@ -14,7 +14,7 @@ public interface IProductService {
     List<Product> findProductsByListId(List<Long> listId);
     Product createProduct(ProductDTO productDTO) ;
     Product getProduct(long id);
-    Page<ProductResponse> getAllProducts(String keyword,long categoryId,PageRequest pageRequest);
+    Page<ProductResponse> getAllProducts(String keyword,Long categoryId,PageRequest pageRequest);
     Product updateProduct(long id, ProductDTO productDTO);
     void deleteProduct (long id);
     boolean existsByName(String name);
