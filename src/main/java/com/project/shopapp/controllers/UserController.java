@@ -82,4 +82,19 @@ public class UserController {
         }
         return ResponseEntity.ok("Delete " + id + " successfully!");
     }
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<?> getUserDetails(@Valid @RequestBody UserDTO userDTO,
+                                            @PathVariable Long userId,
+                                            BindingResult result ) {
+        try {
+            if (result.hasErrors()) {
+                List<String> errorMessages = result.getFieldErrors().stream().map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage()).toList();
+                return ResponseEntity.badRequest().body(errorMessages);
+            }
+            User user = userService.updateUser(userDTO,userId);
+            return ResponseEntity.ok(UserResponse.fromUser(user));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

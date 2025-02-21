@@ -38,6 +38,8 @@ public class WebSecurityConfig {
                             //User
                             .requestMatchers(HttpMethod.GET, "api/v1/users/details")
                             .hasAnyRole(Role.ADMIN, Role.USER)
+                            .requestMatchers(HttpMethod.PUT, "api/v1/users/update")
+                            .hasAnyRole(Role.ADMIN, Role.USER)
                             // Roles
                             .requestMatchers(HttpMethod.GET, "api/v1/roles/**").permitAll()
                             // categories

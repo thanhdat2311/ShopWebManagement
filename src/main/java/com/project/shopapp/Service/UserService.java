@@ -9,11 +9,14 @@ import com.project.shopapp.repositories.RoleRepo;
 import com.project.shopapp.repositories.UserRepo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.security.InvalidParameterException;
 import java.util.Optional;
 @Service
@@ -48,6 +51,34 @@ public class UserService implements IUserService {
         return user;}
         return null;
 
+    }
+
+    @Transactional
+    public User updateUser(UserDTO updateUserDTO, Long userId) throws Exception{
+        User user = userRepo.findById(userId)
+                .orElseThrow(()-> new Exception("User not found!!!"));
+        if(!user.getPhone().equals(updateUserDTO.getPhone()) &&
+                userRepo.existsByPhone(updateUserDTO.getPhone())){
+            throw new DataIntegrityViolationException("Phone number already exists!");
+        }
+        if (updateUserDTO.getFullName() != null) user.setFullname(updateUserDTO.getFullName());
+        if (updateUserDTO.getPhone() != null) user.setPhone(updateUserDTO.getPhone());
+        if (updateUserDTO.getAddress() != null) user.setAddress(updateUserDTO.getAddress());
+        if (updateUserDTO.getDateOfBirth() != null) user.setDate_of_birth(updateUserDTO.getDateOfBirth());
+
+        // Chuyển đổi int sang boolean
+        user.setIs_active(updateUserDTO.getIs_active() == 1);
+
+        // Nếu có role mới, lấy từ DB
+        if (updateUserDTO.getRoleId() != null) {
+            Role newRole = roleRepo.findById(updateUserDTO.getRoleId())
+                    .orElseThrow(() -> new Exception("Role not found!"));
+            user.setRole(newRole);
+        }
+
+        userRepo.save(user);
+        return user;
+        // 10:50
     }
 
     @Override
