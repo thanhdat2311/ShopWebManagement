@@ -3,13 +3,19 @@ package com.project.shopapp.controllers;
 import com.project.shopapp.Service.OrderService;
 import com.project.shopapp.dtos.OrderDTO;
 import com.project.shopapp.models.Order;
+import com.project.shopapp.response.OrderListResponse;
 import com.project.shopapp.util.LocalizationUtils;
 import jakarta.validation.Valid;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,6 +75,26 @@ public class OrderController {
         //Soft delete
         orderService.deleteOrder(id);
         return ResponseEntity.ok("Delete " + id + " successfully!");
+    }
+
+    @GetMapping("/get-orders-by-keyword")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<OrderListResponse> getOrderByKeyword(@RequestParam(required = false) String keyword,
+                                                         @RequestParam(defaultValue = "0") int page,
+                                                         @RequestParam(defaultValue = "10") int limit,
+                                                         Pageable pageable
+                                                         ) {
+        PageRequest pageRequest = PageRequest.of(page,limit, Sort.by("id").ascending());
+
+        Page<Order> orderPage = orderService.findByKeyWord(keyword,pageRequest);
+        int totalPage = orderPage.getTotalPages();
+        List<Order> orderList = orderPage.getContent();
+    return ResponseEntity.ok(
+            OrderListResponse.builder()
+                    .orders(orderList)
+                    .TotalPages(totalPage)
+                    .build()
+    );
     }
 }
 //3:11

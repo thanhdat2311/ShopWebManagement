@@ -75,7 +75,6 @@ public class UserService implements IUserService {
                     .orElseThrow(() -> new Exception("Role not found!"));
             user.setRole(newRole);
         }
-
         userRepo.save(user);
         return user;
         // 10:50
@@ -121,5 +120,17 @@ public class UserService implements IUserService {
         User user = userRepo.findByPhone(phoneNumber).orElseThrow(
                 () ->  new EntityNotFoundException("Cannot find user"));
         return user;
+    }
+    @Override
+    public Boolean validToken(String token){
+        if(jwtTokenUtil.isTokenExpired(token)){
+            return false;
+        }
+        String phoneNumber = jwtTokenUtil.extractPhoneNumber(token);
+        Optional<User> user = userRepo.findByPhone(phoneNumber);
+        if(user.isEmpty()){
+            return false;
+        }
+        return true;
     }
 }

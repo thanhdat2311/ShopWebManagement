@@ -10,6 +10,9 @@ import com.project.shopapp.repositories.UserRepo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.security.InvalidParameterException;
@@ -90,4 +93,10 @@ public class OrderService implements IOrderService {
         order.setActive(false);
         orderRepo.save(order);
     }
+
+    @Override
+    public Page<Order> findByKeyWord(String keyword, PageRequest pageRequest){
+        return  orderRepo.findByKeyWord(keyword,pageRequest);
+    }
+
 }

@@ -9,4 +9,5 @@ public interface IUserService {
     String login(String phone, String password, Long RoleId);
     Long deleteUser(Long id);
     User getUserDetails(String token) throws Exception;
+    Boolean validToken(String token);
 }

@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -15,13 +17,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
+@EnableWebMvc
+@EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
     private final JwtTokenFilter jwtTokenFilter;
 
@@ -39,6 +44,8 @@ public class WebSecurityConfig {
                             .requestMatchers(HttpMethod.GET, "api/v1/users/details")
                             .hasAnyRole(Role.ADMIN, Role.USER)
                             .requestMatchers(HttpMethod.PUT, "api/v1/users/update")
+                            .hasAnyRole(Role.ADMIN, Role.USER)
+                            .requestMatchers(HttpMethod.GET, "api/v1/users/valid-token")
                             .hasAnyRole(Role.ADMIN, Role.USER)
                             // Roles
                             .requestMatchers(HttpMethod.GET, "api/v1/roles/**").permitAll()
@@ -62,7 +69,7 @@ public class WebSecurityConfig {
                             .requestMatchers(HttpMethod.POST, "api/v1/order").hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.PUT, "api/v1/order/**").hasRole(Role.ADMIN)
                             .requestMatchers(HttpMethod.DELETE, "api/v1/order/**").hasRole(Role.ADMIN)
-                            .requestMatchers(HttpMethod.GET, "api/v1/order/**").permitAll()
+                            .requestMatchers(HttpMethod.GET, "api/v1/order/*").permitAll()
                             .anyRequest().authenticated();
                 });
         http.cors(new Customizer<CorsConfigurer<HttpSecurity>>() {

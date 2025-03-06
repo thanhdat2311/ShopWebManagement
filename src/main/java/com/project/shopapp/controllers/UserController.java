@@ -74,6 +74,19 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+    @GetMapping("/valid-token")
+    public ResponseEntity<?> validtoken(@RequestHeader("Authorization") String token) {
+        try {
+        if(token.isBlank()||token.isEmpty()){
+            return ResponseEntity.ok(false);
+        }
+            token = token.substring(7);
+            Boolean validToken = userService.validToken(token);
+            return ResponseEntity.ok(validToken);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+        }
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@Valid @PathVariable Long id) {
